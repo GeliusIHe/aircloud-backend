@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-^*=+)3wtjj&z+1!641-y0^w^&b!7p#1fj!3u8=_c0_fs_(3rf2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['api2.geliusihe.ru', 'localhost', '127.0.0.1']
 
 SESSION_COOKIE_SECURE = False
 
