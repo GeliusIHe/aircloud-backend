@@ -10,7 +10,7 @@ from accounts.components.album_management.GroupAlbumMembersView.views import Gro
 from accounts.components.authentication.RegisterView.views import RegisterView
 from accounts.components.authentication.LoginView.views import LoginView
 from accounts.components.file_management.FileUploadView.views import UserFileListView
-from .components.utils.ImageTaggingView.views import ImageTaggingView
+from .components.file_management.ImagesByTagView.views import ImagesByTagView
 from .views import FileUploadView, AlbumMembersListView
 
 urlpatterns = [
@@ -28,5 +28,5 @@ urlpatterns = [
          name='delete_file_from_album'),
     path('file/tags/', FileTagEditView.as_view(), name='file_tags_edit'),
     path('file/tags/<int:file_id>/', FileTagEditView.as_view(), name='file_tags_edit'),
-    path('tag-image/<int:file_id>/', ImageTaggingView.as_view(), name='tag-image-by-id'),
+    path('images-by-tag/', ImagesByTagView.as_view(), name='images_by_tag'),
 ]
