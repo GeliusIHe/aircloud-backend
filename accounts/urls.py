@@ -10,6 +10,7 @@ from accounts.components.album_management.GroupAlbumMembersView.views import Gro
 from accounts.components.authentication.RegisterView.views import RegisterView
 from accounts.components.authentication.LoginView.views import LoginView
 from accounts.components.file_management.FileUploadView.views import UserFileListView
+from .components.album_components.UserAlbumsView.views import UserAlbumsView
 from .components.file_management.DownloadAlbumView.views import DownloadAlbumView
 from .components.file_management.DownloadSelectedPhotosView.views import DownloadSelectedPhotosView
 from .components.file_management.ImagesByTagView.views import ImagesByTagView
@@ -33,4 +34,5 @@ urlpatterns = [
     path('images-by-tag/', ImagesByTagView.as_view(), name='images_by_tag'),
     path('albums/<int:album_id>/download/', DownloadAlbumView.as_view(), name='download-album'),
     path('download_selected_photos/', DownloadSelectedPhotosView.as_view(), name='download_selected_photos'),
+    path('user_albums/', UserAlbumsView.as_view(), name='user_albums'),
 ]
