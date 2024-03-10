@@ -43,4 +43,4 @@ class GroupAlbumMembersView(View):
         except User.DoesNotExist:
             return JsonResponse({'error': 'User does not exist.'}, status=404)
         except Album.DoesNotExist:
-            return JsonResponse({'error': 'Album does not exist.'}, status=404)
+            return JsonResponse({'error': 'album_components does not exist.'}, status=404)

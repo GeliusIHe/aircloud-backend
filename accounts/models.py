@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 
 
 def user_directory_path(instance, filename):
-    # Путь для хранения файла будет uploads/user_<user_id>/<filename>
     return 'uploads/user_{0}/{1}'.format(instance.user.id, filename)
 
 
@@ -12,6 +11,7 @@ class UserProfile(models.Model):
     bio = models.TextField(null=True, blank=True)
     birthday = models.DateField(null=True, blank=True)
     files = models.FileField(upload_to=user_directory_path, null=True, blank=True)
+
 
 class Album(models.Model):
     users = models.ManyToManyField(User, related_name='albums')
@@ -22,6 +22,8 @@ class Album(models.Model):
 
     def __str__(self):
         return self.name
+
+
 class AlbumMember(models.Model):
     album = models.ForeignKey(Album, related_name='members', on_delete=models.CASCADE)
     user = models.ForeignKey(User, related_name='album_memberships', on_delete=models.CASCADE)
@@ -29,6 +31,13 @@ class AlbumMember(models.Model):
 
     def __str__(self):
         return f"{self.user.username} -> {self.album.name}"
+
+class Tag(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+
 class UserFile(models.Model):
     FILE_TYPES = (
         ('photo', 'Photo'),
@@ -38,6 +47,8 @@ class UserFile(models.Model):
     file = models.FileField(upload_to=user_directory_path)
     file_type = models.CharField(max_length=5, choices=FILE_TYPES)
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    album = models.ForeignKey(Album, on_delete=models.CASCADE, related_name='files', null=True, blank=True)  # Добавленная строка
+    album = models.ForeignKey(Album, on_delete=models.CASCADE, related_name='files', null=True, blank=True)
+    tags = models.ManyToManyField(Tag, related_name='user_files', blank=True)
 
-
+    def __str__(self):
+        return f"{self.user.username} - {self.file.name}"

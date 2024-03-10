@@ -14,7 +14,7 @@ class GroupAlbumCreateView(View):
         member_usernames = data.get('members', [])
 
         if not album_name:
-            return JsonResponse({'error': 'Album name is required.'}, status=400)
+            return JsonResponse({'error': 'album_components name is required.'}, status=400)
 
         album = Album.objects.create(name=album_name, creator=request.user)
 

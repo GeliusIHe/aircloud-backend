@@ -33,6 +33,9 @@ SESSION_COOKIE_SECURE = False
 
 SESSION_COOKIE_HTTPONLY = True
 
+CSRF_TRUSTED_ORIGINS = ['https://api2.geliusihe.ru']
+
+
 # Application definition
 
 INSTALLED_APPS = [

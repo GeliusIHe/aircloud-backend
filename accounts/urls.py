@@ -1,13 +1,16 @@
 from django.urls import path
 
-from .components.AlbumCreateView.views import AlbumCreateView
-from .components.AlbumFileUploadView.views import AlbumFileUploadView
-from .components.AlbumFilesListView.views import AlbumFilesListView
-from .components.GroupAlbumCreateView.views import GroupAlbumCreateView
-from .components.GroupAlbumMembersView.views import GroupAlbumMembersView
-from .components.RegisterView.views import RegisterView
-from .components.LoginView.views import LoginView
-from .components.FileUploadView.views import UserFileListView
+from accounts.components.album_components.AlbumCreateView.views import AlbumCreateView
+from accounts.components.album_components.AlbumFileDeleteView.views import AlbumFileDeleteView
+from accounts.components.album_components.AlbumFileUploadView.views import AlbumFileUploadView
+from accounts.components.album_components.AlbumFilesListView.views import AlbumFilesListView
+from accounts.components.file_management.FileTagEditView.views import FileTagEditView
+from accounts.components.album_management.GroupAlbumCreateView.views import GroupAlbumCreateView
+from accounts.components.album_management.GroupAlbumMembersView.views import GroupAlbumMembersView
+from accounts.components.authentication.RegisterView.views import RegisterView
+from accounts.components.authentication.LoginView.views import LoginView
+from accounts.components.file_management.FileUploadView.views import UserFileListView
+from .components.utils.ImageTaggingView.views import ImageTaggingView
 from .views import FileUploadView, AlbumMembersListView
 
 urlpatterns = [
@@ -21,4 +24,9 @@ urlpatterns = [
     path('group-albums/create/', GroupAlbumCreateView.as_view(), name='group-album-create'),
     path('group-albums/<int:album_id>/members/', GroupAlbumMembersView.as_view(), name='group-album-members'),
     path('albums/<int:album_id>/members/', AlbumMembersListView.as_view(), name='album-members-list'),
+    path('album/<int:album_id>/delete-file/<int:file_id>/', AlbumFileDeleteView.as_view(),
+         name='delete_file_from_album'),
+    path('file/tags/', FileTagEditView.as_view(), name='file_tags_edit'),
+    path('file/tags/<int:file_id>/', FileTagEditView.as_view(), name='file_tags_edit'),
+    path('tag-image/<int:file_id>/', ImageTaggingView.as_view(), name='tag-image-by-id'),
 ]

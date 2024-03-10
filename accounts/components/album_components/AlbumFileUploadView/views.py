@@ -14,7 +14,7 @@ class AlbumFileUploadView(View):
         try:
             album = Album.objects.get(id=album_id, user=request.user)
         except Album.DoesNotExist:
-            return JsonResponse({'error': 'Album does not exist.'}, status=404)
+            return JsonResponse({'error': 'album_components does not exist.'}, status=404)
 
         user_file = UserFile(user=request.user, file=file, file_type=file_type, album=album)
         user_file.save()
