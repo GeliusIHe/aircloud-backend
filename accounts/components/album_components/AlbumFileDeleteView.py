@@ -16,6 +16,6 @@ class AlbumFileDeleteView(View):
             user_file.delete()
             return JsonResponse({'message': 'File deleted from album successfully.'}, status=200)
         except Album.DoesNotExist:
-            return JsonResponse({'error': 'album_components does not exist or you do not have permission to access it.'}, status=404)
+            return JsonResponse({'error': 'Album does not exist or you do not have permission to access it.'}, status=404)
         except UserFile.DoesNotExist:
             return JsonResponse({'error': 'File does not exist or you do not have permission to access it.'}, status=404)

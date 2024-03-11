@@ -12,8 +12,8 @@ class AlbumCreateView(View):
         album_name = data.get('name')
 
         if not album_name:
-            return JsonResponse({'error': 'album_components name is required.'}, status=400)
+            return JsonResponse({'error': 'Album name is required.'}, status=400)
 
         album = Album.objects.create(name=album_name, creator=request.user)
 
-        return JsonResponse({'message': 'album_components created successfully.', 'album_id': album.id}, status=201)
+        return JsonResponse({'message': 'Album created successfully.', 'album_id': album.id}, status=201)

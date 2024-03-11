@@ -17,10 +17,17 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import include, path, re_path
+from django.conf.urls.static import static
+from django.conf import settings
+
+from accounts.components.file_management.FileServeView import FileServeView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('LoginView/', auth_views.LoginView.as_view(), name='LoginView'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('accounts/', include('accounts.urls')),
-]
+    path('uploads/<path:file_path>', FileServeView.as_view(), name='serve_file'),
+
+
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
