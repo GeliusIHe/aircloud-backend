@@ -1,19 +1,19 @@
 from django.urls import path
 
-from accounts.components.album_components.AlbumCreateView.views import AlbumCreateView
-from accounts.components.album_components.AlbumFileDeleteView.views import AlbumFileDeleteView
-from accounts.components.album_components.AlbumFileUploadView.views import AlbumFileUploadView
-from accounts.components.album_components.AlbumFilesListView.views import AlbumFilesListView
-from accounts.components.file_management.FileTagEditView.views import FileTagEditView
-from accounts.components.album_management.GroupAlbumCreateView.views import GroupAlbumCreateView
-from accounts.components.album_management.GroupAlbumMembersView.views import GroupAlbumMembersView
-from accounts.components.authentication.RegisterView.views import RegisterView
-from accounts.components.authentication.LoginView.views import LoginView
-from accounts.components.file_management.FileUploadView.views import UserFileListView
-from .components.album_components.UserAlbumsView.views import UserAlbumsView
-from .components.file_management.DownloadAlbumView.views import DownloadAlbumView
-from .components.file_management.DownloadSelectedPhotosView.views import DownloadSelectedPhotosView
-from .components.file_management.ImagesByTagView.views import ImagesByTagView
+from accounts.components.album_components.AlbumCreateView import AlbumCreateView
+from accounts.components.album_components.AlbumFileDeleteView import AlbumFileDeleteView
+from accounts.components.album_components.AlbumFileUploadView import AlbumFileUploadView
+from accounts.components.album_components.AlbumFilesListView import AlbumFilesListView
+from accounts.components.file_management.FileTagEditView import FileTagEditView
+from accounts.components.album_management.GroupAlbumCreateView import GroupAlbumCreateView
+from accounts.components.album_management.GroupAlbumMembersView import GroupAlbumMembersView
+from accounts.components.authentication.RegisterView import RegisterView
+from accounts.components.authentication.LoginView import LoginView
+from accounts.components.file_management.FileUploadView import UserFileListView
+from .components.album_components.UserAlbumsView import UserAlbumsView
+from .components.file_management.DownloadAlbumView import DownloadAlbumView
+from .components.file_management.DownloadSelectedPhotosView import DownloadSelectedPhotosView
+from .components.file_management.ImagesByTagView import ImagesByTagView
 from .views import FileUploadView, AlbumMembersListView
 
 urlpatterns = [

@@ -10,7 +10,6 @@ class UserAlbumsView(APIView):
 
     def get(self, request):
         user = request.user
-        # Используем фильтрацию через обратные связи и связи ManyToMany
         albums = Album.objects.filter(Q(creator=user) | Q(users=user)).distinct()
         serializer = AlbumSerializer(albums, many=True)
         return Response(serializer.data)
