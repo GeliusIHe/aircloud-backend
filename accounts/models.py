@@ -3,7 +3,11 @@ from django.contrib.auth.models import User
 
 
 def user_directory_path(instance, filename):
-    return 'uploads/user_{0}/{1}'.format(instance.user.id, filename)
+    return f'uploads/user_{instance.user.id}/{filename}'
+
+
+def user_directory_path_metadata(instance, filename):
+    return f'uploads/user_{instance.user.id}/metadata/{filename}'
 
 
 class UserProfile(models.Model):
@@ -32,11 +36,13 @@ class AlbumMember(models.Model):
     def __str__(self):
         return f"{self.user.username} -> {self.album.name}"
 
+
 class Tag(models.Model):
     name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
+
 
 class UserFile(models.Model):
     FILE_TYPES = (

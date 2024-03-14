@@ -21,6 +21,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 from accounts.components.file_management.FileServeView import FileServeView
+from accounts.components.utils.MetadataServeView import MetadataServeView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,6 +29,5 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('accounts/', include('accounts.urls')),
     path('uploads/<path:file_path>', FileServeView.as_view(), name='serve_file'),
-
-
+    path('metadata/user_<int:user_id>/<path:filename>.json', MetadataServeView.as_view(), name='metadata_serve'),
 ]
