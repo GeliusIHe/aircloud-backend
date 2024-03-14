@@ -19,7 +19,7 @@ class FileServeView(View):
         cached_directory = os.path.join(os.path.dirname(safe_file_path), 'cached')
         os.makedirs(cached_directory, exist_ok=True)
         filename_without_extension, extension = os.path.splitext(os.path.basename(safe_file_path))
-        cached_file_path = os.path.join(cached_directory, filename_without_extension + ('_preview.png' if preview_requested else '.png'))
+        cached_file_path = os.path.join(cached_directory, filename_without_extension + ('_preview.png' if preview_requested else extension))
 
         path_parts = original_file_path.split('/')
         if len(path_parts) < 2 or not path_parts[0].startswith('user_'):
@@ -37,6 +37,22 @@ class FileServeView(View):
         if os.path.exists(cached_file_path):
             with open(cached_file_path, 'rb') as file:
                 return HttpResponse(file.read(), content_type="image/png")
+
+        if preview_requested:
+            try:
+                with Image.open(safe_file_path) as img:
+                    img.thumbnail((200, 200))
+                    buffer = io.BytesIO()
+                    img.save(buffer, format="PNG")
+                    buffer.seek(0)
+                    with open(cached_file_path, 'wb') as f:
+                        f.write(buffer.getvalue())
+                    return HttpResponse(buffer.getvalue(), content_type="image/png")
+            except Exception as e:
+                raise Http404(f"Error processing file: {e}")
+
+        if original_file_path.endswith('/'):
+            original_file_path = original_file_path[:-1]
 
         if original_file_path.endswith(('.dng', '.raw')):
             try:
@@ -63,4 +79,3 @@ class FileServeView(View):
                 return response
         except IOError:
             raise Http404("Error in reading file.")
-
