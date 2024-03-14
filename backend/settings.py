@@ -35,9 +35,6 @@ SESSION_COOKIE_HTTPONLY = True
 
 CSRF_TRUSTED_ORIGINS = ['https://api2.geliusihe.ru']
 
-MEDIA_URL = '/uploads/'
-MEDIA_ROOT = BASE_DIR / 'uploads'
-
 # Application definition
 
 INSTALLED_APPS = [

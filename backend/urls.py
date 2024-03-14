@@ -30,4 +30,4 @@ urlpatterns = [
     path('uploads/<path:file_path>', FileServeView.as_view(), name='serve_file'),
 
 
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
