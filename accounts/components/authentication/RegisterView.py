@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.views import View
+from rest_framework_simplejwt.tokens import RefreshToken
 import json
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -13,7 +14,12 @@ class RegisterView(View):
             form = UserCreationForm(data)
             if form.is_valid():
                 user = form.save()
-                return JsonResponse({'message': 'User created successfully'}, status=201)
+                refresh = RefreshToken.for_user(user)
+                return JsonResponse({
+                    'refresh': str(refresh),
+                    'access': str(refresh.access_token),
+                    'message': 'User created successfully'
+                }, status=201)
             else:
                 return JsonResponse({'errors': form.errors}, status=400)
         except json.JSONDecodeError:

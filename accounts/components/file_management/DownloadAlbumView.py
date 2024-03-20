@@ -1,21 +1,22 @@
-from django.db.models import Q
-from django.http import HttpResponse
-from django.views import View
-from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
-import zipfile
+import logging
 import os
 import tempfile
+import zipfile
 from wsgiref.util import FileWrapper
-import logging
+
+from django.db.models import Q
+from django.http import HttpResponse
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 from accounts.models import Album
 
 logger = logging.getLogger(__name__)
 
 
-@method_decorator(login_required, name='dispatch')
-class DownloadAlbumView(View):
+class DownloadAlbumView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, *args, **kwargs):
         album_id = kwargs.get('album_id')
         user = request.user
@@ -66,4 +67,3 @@ class DownloadAlbumView(View):
             return HttpResponse('Error creating zip file.', status=500)
         finally:
             os.remove(temp_zip_path)
-

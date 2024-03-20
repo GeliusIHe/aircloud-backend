@@ -1,13 +1,14 @@
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from django.http import JsonResponse
-from django.views import View
 from django.contrib.auth.models import User
-from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
 from accounts.models import Album
 import json
 
-@method_decorator(login_required, name='dispatch')
-class GroupAlbumMembersView(View):
+class GroupAlbumMembersView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
         username = data.get('username')
@@ -23,7 +24,6 @@ class GroupAlbumMembersView(View):
             if request.user != album.creator:
                 return JsonResponse({'error': 'You do not have permission to modify this album.'}, status=403)
 
-            # Proceed with adding or removing the user
             user = User.objects.get(username=username)
 
             if action == 'add':

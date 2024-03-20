@@ -1,14 +1,15 @@
-from accounts.serializers import UserFileSerializer
+from django.http import JsonResponse
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from django.views import View
-from django.http import JsonResponse
-from accounts.models import UserFile
+from rest_framework.views import APIView
 
-@method_decorator(login_required, name='dispatch')
-class FileUploadView(View):
+from accounts.models import UserFile
+from accounts.serializers import UserFileSerializer
+
+
+class FileUploadView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         file = request.FILES.get('file')
         file_type = request.POST.get('file_type', 'photo')

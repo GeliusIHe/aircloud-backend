@@ -1,12 +1,13 @@
 from django.http import JsonResponse
-from django.views import View
-from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+
 from accounts.models import UserFile, Tag
 
 
-@method_decorator(login_required, name='dispatch')
-class ImagesByTagView(View):
+class ImagesByTagView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         tag_name = request.GET.get('tag')
         if not tag_name:

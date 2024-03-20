@@ -2,16 +2,16 @@ import json
 import os
 
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, Http404
-from django.utils.decorators import method_decorator
-from django.views import View
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 from accounts.models import User, Album
 
 
-@method_decorator(login_required, name='dispatch')
-class MetadataServeView(View):
+class MetadataServeView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, request, user_id, filename):
         metadata_file_path = os.path.join(settings.BASE_DIR, 'uploads', f'user_{user_id}', f'{filename}.json')
 

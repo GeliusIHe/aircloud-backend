@@ -1,21 +1,21 @@
 import json
-from django.http import JsonResponse, HttpResponse
-from django.views import View
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
-import zipfile
-import tempfile
-from wsgiref.util import FileWrapper
-import os
-from accounts.models import UserFile
 import logging
+import os
+import tempfile
+import zipfile
+from wsgiref.util import FileWrapper
+
+from django.http import HttpResponse, JsonResponse
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+
+from accounts.models import UserFile
 
 logger = logging.getLogger(__name__)
 
-@method_decorator(csrf_exempt, name='dispatch')
-@method_decorator(login_required, name='dispatch')
-class DownloadSelectedPhotosView(View):
+class DownloadSelectedPhotosView(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request, *args, **kwargs):
         try:
             photo_ids = json.loads(request.body).get('photo_ids', [])

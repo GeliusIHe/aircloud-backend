@@ -2,20 +2,19 @@ import json
 import numbers
 import os
 
-from PIL import ExifTags, TiffImagePlugin
-from PIL import Image
-from django.contrib.auth.decorators import login_required
+from PIL import Image, ExifTags, TiffImagePlugin
 from django.db.models import Q
 from django.http import JsonResponse
-from django.utils.decorators import method_decorator
-from django.views import View
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 from accounts.models import UserFile, Album, user_directory_path_metadata
 
 
-@method_decorator(login_required, name='dispatch')
-class AlbumFileUploadView(View):
-    def post(self, request):
+class AlbumFileUploadView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
         response_data = {'message': 'The file has been successfully uploaded to the album.'}
         file = request.FILES.get('file')
         file_type = request.POST.get('file_type', 'photo')
@@ -36,24 +35,22 @@ class AlbumFileUploadView(View):
                 if hasattr(image, '_getexif'):
                     exif_info = image._getexif()
                     if exif_info is not None:
-                        exif_data = {ExifTags.TAGS.get(key): value for key, value in exif_info.items() if
-                                     key in ExifTags.TAGS}
+                        exif_data = {ExifTags.TAGS.get(key): value for key, value in exif_info.items() if key in ExifTags.TAGS}
                         serializable_exif_data = exif_to_serializable(exif_data)
 
                         filename_for_metadata = os.path.splitext(os.path.basename(user_file.file.name))[0] + '.json'
-
                         metadata_path = user_directory_path_metadata(user_file, filename_for_metadata)
                         os.makedirs(os.path.dirname(metadata_path), exist_ok=True)
                         with open(metadata_path, 'w') as metadata_file:
                             json.dump(serializable_exif_data, metadata_file)
             except Exception as e:
                 error_message = f'Failed to extract metadata: {e}'
-                print(error_message)
                 response_data['metadata_error'] = error_message
         else:
             return JsonResponse({'error': 'The file was not provided or the file type is not supported.'}, status=400)
 
         return JsonResponse(response_data, status=201)
+
 
 
 def exif_to_serializable(exif_data):
