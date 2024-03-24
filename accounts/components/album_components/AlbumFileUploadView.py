@@ -35,7 +35,8 @@ class AlbumFileUploadView(APIView):
                 if hasattr(image, '_getexif'):
                     exif_info = image._getexif()
                     if exif_info is not None:
-                        exif_data = {ExifTags.TAGS.get(key): value for key, value in exif_info.items() if key in ExifTags.TAGS}
+                        exif_data = {ExifTags.TAGS.get(key): value for key, value in exif_info.items() if
+                                     key in ExifTags.TAGS}
                         serializable_exif_data = exif_to_serializable(exif_data)
 
                         filename_for_metadata = os.path.splitext(os.path.basename(user_file.file.name))[0] + '.json'
@@ -50,7 +51,6 @@ class AlbumFileUploadView(APIView):
             return JsonResponse({'error': 'The file was not provided or the file type is not supported.'}, status=400)
 
         return JsonResponse(response_data, status=201)
-
 
 
 def exif_to_serializable(exif_data):

@@ -19,6 +19,8 @@ class GroupAlbumCreateView(APIView):
 
         album = Album.objects.create(name=album_name, creator=request.user)
         album.users.add(request.user)
+        album = Album.objects.create(name=album_name, creator=request.user,
+                                     is_private=False)  # для групповых альбомов устанавливаем is_private в False
 
         for username in member_usernames:
             try:

@@ -1,23 +1,23 @@
-from django.db.models import Q
 from django.http import HttpResponse, Http404, HttpResponseForbidden
-from django.views import View
+import io
+import logging
+import mimetypes
+import os
+from urllib.parse import quote
+from moviepy.editor import VideoFileClip
+
+import rawpy
+from PIL import Image
 from django.conf import settings
 from django.contrib.auth.models import User
-from accounts.models import Album, UserFile
-import rawpy
-import os
-import mimetypes
-from PIL import Image
-import io
-from urllib.parse import quote
+from django.http import HttpResponse, Http404, HttpResponseForbidden
 
-import logging
+from accounts.models import UserFile
 
 logger = logging.getLogger(__name__)
 
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from django.shortcuts import get_object_or_404
 
 
 class FileServeView(APIView):
@@ -29,9 +29,14 @@ class FileServeView(APIView):
 
         safe_file_path = os.path.normpath(os.path.join(settings.BASE_DIR, 'uploads', original_file_path))
         cached_directory = os.path.join(os.path.dirname(safe_file_path), 'cached')
-        os.makedirs(cached_directory, exist_ok=True)  # Создаем директорию, если она не существует
+        os.makedirs(cached_directory, exist_ok=True)
         filename_without_extension, extension = os.path.splitext(os.path.basename(safe_file_path))
-        cached_file_path = os.path.join(cached_directory, filename_without_extension + ('_preview.png' if preview_requested else extension))
+        cached_file_name = f"{filename_without_extension}_preview.png" if preview_requested else os.path.basename(
+            safe_file_path)
+        cached_file_path = os.path.join(cached_directory, cached_file_name)
+
+        logger.debug(
+            f"Preview requested: {preview_requested}, Safe path: {safe_file_path}, Cached path: {cached_file_path}")
 
         if not os.path.exists(safe_file_path):
             raise Http404("File does not exist.")
@@ -63,6 +68,22 @@ class FileServeView(APIView):
         if os.path.exists(cached_file_path):
             with open(cached_file_path, 'rb') as file:
                 return HttpResponse(file.read(), content_type="image/png")
+
+        if preview_requested and extension.lower() in ['.dng', '.raw']:
+            try:
+                with rawpy.imread(safe_file_path) as raw:
+                    rgb_image = raw.postprocess()
+                image = Image.fromarray(rgb_image)
+                image.thumbnail((200, 200))
+                buffer = io.BytesIO()
+                image.save(buffer, format="PNG")
+                buffer.seek(0)
+                with open(cached_file_path, 'wb') as f:
+                    f.write(buffer.getvalue())
+                return HttpResponse(buffer.getvalue(), content_type="image/png")
+            except Exception as e:
+                logger.error(f"Error processing RAW file: {e}")
+                raise Http404(f"Error processing file: {e}")
 
         if preview_requested:
             try:
