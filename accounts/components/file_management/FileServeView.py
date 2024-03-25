@@ -24,9 +24,11 @@ class FileServeView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, file_path):
+        logger.debug(f"Requested file path: {file_path}")
         preview_requested = 'preview' in file_path.split('/')
         original_file_path = file_path.replace('/preview', '')
-
+        logger.debug('test3')
+        print('test')
         safe_file_path = os.path.normpath(os.path.join(settings.BASE_DIR, 'uploads', original_file_path))
         cached_directory = os.path.join(os.path.dirname(safe_file_path), 'cached')
         os.makedirs(cached_directory, exist_ok=True)
@@ -54,7 +56,7 @@ class FileServeView(APIView):
                     raise HttpResponseForbidden("You do not have access to this file.")
             except UserFile.DoesNotExist:
                 raise HttpResponseForbidden("You do not have access to this file.")
-
+        logger.debug('test1')
         path_parts = original_file_path.split('/')
         if len(path_parts) < 2 or not path_parts[0].startswith('user_'):
             raise Http404("Invalid file path format.")
@@ -68,6 +70,25 @@ class FileServeView(APIView):
         if os.path.exists(cached_file_path):
             with open(cached_file_path, 'rb') as file:
                 return HttpResponse(file.read(), content_type="image/png")
+
+        logger.debug('test')
+        if preview_requested:
+            extension = os.path.splitext(safe_file_path)[1].lower()
+            if extension in ['.mp4', '.mov']:
+                try:
+                    clip = VideoFileClip(safe_file_path)
+                    frame = clip.get_frame(1)  # Получаем кадр на 1 секунде видео
+                    image = Image.fromarray(frame)
+                    image.thumbnail((200, 200))  # Меняем размер до миниатюры
+                    buffer = io.BytesIO()
+                    image.save(buffer, format="PNG")
+                    buffer.seek(0)
+                    with open(cached_file_path, 'wb') as f:
+                        f.write(buffer.getvalue())
+                    return HttpResponse(buffer.getvalue(), content_type="image/png")
+                except Exception as e:
+                    logger.error(f"Error processing video file: {e}")
+                    raise Http404(f"Error processing video file: {e}")
 
         if preview_requested and extension.lower() in ['.dng', '.raw']:
             try:
@@ -84,6 +105,8 @@ class FileServeView(APIView):
             except Exception as e:
                 logger.error(f"Error processing RAW file: {e}")
                 raise Http404(f"Error processing file: {e}")
+
+
 
         if preview_requested:
             try:

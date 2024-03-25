@@ -56,7 +56,7 @@ class FileTagEditView(APIView):
 
             headers = {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer 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"
+                "Authorization": "Bearer token"
             }
 
             response = requests.post("https://api.openai.com/v1/chat/completions", json=payload, headers=headers)

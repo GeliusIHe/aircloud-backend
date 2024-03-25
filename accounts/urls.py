@@ -14,6 +14,7 @@ from .components.album_components.UserAlbumsView import UserAlbumsView
 from .components.file_management.DownloadAlbumView import DownloadAlbumView
 from .components.file_management.DownloadSelectedPhotosView import DownloadSelectedPhotosView
 from .components.file_management.ImagesByTagView import ImagesByTagView
+from .components.utils.UsernameView import CurrentUserView
 from .views import FileUploadView, AlbumMembersListView
 
 urlpatterns = [
@@ -35,4 +36,6 @@ urlpatterns = [
     path('albums/<int:album_id>/download/', DownloadAlbumView.as_view(), name='download-album'),
     path('download_selected_photos/', DownloadSelectedPhotosView.as_view(), name='download_selected_photos'),
     path('user_albums/', UserAlbumsView.as_view(), name='user_albums'),
+    path('current-user/', CurrentUserView.as_view(), name='current-user-view'),
+
 ]
