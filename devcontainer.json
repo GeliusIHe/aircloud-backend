@@ -1,0 +1,16 @@
+{
+    "name": "backend",
+    "image": "mcr.microsoft.com/vscode/devcontainers/base:0-buster",
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+    },
+    "extensions": [
+        "ms-python.python",
+        "ms-vscode.cpptools"
+    ],
+    "forwardPorts": [
+        3000
+    ],
+    "postCreateCommand": "echo 'Welcome to your dev container!'",
+    "remoteUser": "vscode"
+}
